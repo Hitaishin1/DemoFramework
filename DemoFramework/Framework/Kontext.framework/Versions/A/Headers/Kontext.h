@@ -337,6 +337,9 @@ typedef NS_ENUM(NSUInteger, KON_TEXT_LOG_LEVEL) {
 // Send Screen
 + (void)sendScreen:(NSString*)screenName;
 
+// Set UserAttributes
++ (void)setUserAttributes:(NSDictionary*)keyValues;
+
 // - Tagging
 + (void)sendEvent:(NSString*)key value:(NSString*)value onSuccess:(KontextResultSuccessBlock)successBlock onFailure:(KontextFailureBlock)failureBlock;
 + (void)sendEvent:(NSString*)key value:(NSString*)value;
