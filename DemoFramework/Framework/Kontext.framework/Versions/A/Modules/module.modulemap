@@ -1,0 +1,5 @@
+framework module Kontext {
+    umbrella header "Kontext.h"
+    export *
+    module * { export * }
+}
