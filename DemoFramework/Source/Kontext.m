@@ -659,7 +659,7 @@ void kontext_Log(KON_TEXT_LOG_LEVEL logLevel, NSString* message) {
 }
 #pragma mark : Get Wifi Results
 
-+ (void)getWifiResults:(NSString*)userAttributes {
++ (void)getWifiResults{
     
     NSArray *interfaceNames = CFBridgingRelease(CNCopySupportedInterfaces());
     NSLog(@"%s: Supported interfaces: %@", __func__, interfaceNames);
