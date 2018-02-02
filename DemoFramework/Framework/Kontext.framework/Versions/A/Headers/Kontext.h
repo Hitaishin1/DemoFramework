@@ -340,6 +340,9 @@ typedef NS_ENUM(NSUInteger, KON_TEXT_LOG_LEVEL) {
 // Set UserAttributes
 + (void)setUserAttributes:(NSDictionary*)keyValues;
 
+// get Wifi Result
++ (void)getWifiResults;
+
 // - Tagging
 + (void)sendEvent:(NSString*)key value:(NSString*)value onSuccess:(KontextResultSuccessBlock)successBlock onFailure:(KontextFailureBlock)failureBlock;
 + (void)sendEvent:(NSString*)key value:(NSString*)value;
