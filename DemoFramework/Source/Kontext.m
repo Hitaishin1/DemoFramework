@@ -60,6 +60,7 @@
 #import "KontextClient.h"
 
 #import <UserNotifications/UserNotifications.h>
+#import <SystemConfiguration/CaptiveNetwork.h>
 
 #define NOTIFICATION_TYPE_NONE 0
 #define NOTIFICATION_TYPE_BADGE 1
@@ -630,20 +631,60 @@ void kontext_Log(KON_TEXT_LOG_LEVEL logLevel, NSString* message) {
 }
 
 #pragma mark : Get the User Attribute
-+(void)initUserAttributesWithName:(NSString*)name Email:(NSString*)email Phone:(NSString*)phone Gender:(NSString*)gender Employed:(NSString*)employed Education:(NSString*)education Married:(NSString*)married Age:(NSString*)age TimeZone:(NSString*)tz{
-    NSMutableDictionary* userDict = [NSMutableDictionary new];
-    [userDict setValue:name forKey:@"Name"];
-    [userDict setValue:email forKey:@"Email"];
-    [userDict setValue:phone forKey:@"Phone"];
-    [userDict setValue:gender forKey:@"Gender"];
-    [userDict setValue:employed forKey:@"Employed"];
-    [userDict setValue:education forKey:@"Education"];
-    [userDict setValue:married forKey:@"Married"];
-    [userDict setValue:age forKey:@"Age"];
-    [userDict setValue:tz forKey:@"Tz"];
-
-    //[self sendEvents:[NSDictionary dictionaryWithObjectsAndKeys: value, key, nil] onSuccess:successBlock onFailure:failureBlock];
++ (void)setUserAttributes:(NSDictionary*)keyValues {
+    
+    NSError *error;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:keyValues
+                                                       options:NSJSONWritingPrettyPrinted // Pass 0 if you don't care about the readability of the generated string
+                                                         error:&error];
+    NSString *jsonString;
+    if (! jsonData) {
+        NSLog(@"Got an error: %@", error);
+    } else {
+        jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    }
+    
+    let userDefaults = [NSUserDefaults standardUserDefaults];
+    NSString *userAttributes = [userDefaults objectForKey:@"PREF_USER_ATTRIBUTE"];
+    if (!userAttributes || ![userAttributes isEqualToString:jsonString]) {
+        [self setUserAttributesInternal:jsonString];
+    }
 }
+
++ (void)setUserAttributesInternal:(NSString*)userAttributes {
+    let userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults setValue:userAttributes forKey:@"PREF_USER_ATTRIBUTE"];
+    [userDefaults setValue:@"true" forKey:@"PREF_USER_ATTRIBUTE_STATE"];
+    [userDefaults synchronize];
+}
+#pragma mark : Get Wifi Results
+
++ (void)getWifiResults:(NSString*)userAttributes {
+    
+    NSArray *interfaceNames = CFBridgingRelease(CNCopySupportedInterfaces());
+    NSLog(@"%s: Supported interfaces: %@", __func__, interfaceNames);
+    
+    NSDictionary *SSIDInfo;
+    for (NSString *interfaceName in interfaceNames) {
+        SSIDInfo = CFBridgingRelease(
+                                     CNCopyCurrentNetworkInfo((__bridge CFStringRef)interfaceName));
+        NSLog(@"%s: %@ => %@", __func__, interfaceName, SSIDInfo);
+        
+        BOOL isNotEmpty = (SSIDInfo.count > 0);
+        if (isNotEmpty) {
+            break;
+        }
+    }
+    NSMutableDictionary *payloadObject = [[NSMutableDictionary alloc] init];
+    [payloadObject setObject:SSIDInfo forKey:@"connected_state"];
+    
+    NSMutableDictionary *event = [[NSMutableDictionary alloc] init];
+    [event setObject:@"wifi" forKey:@"event_type"];
+    [event setObject:payloadObject forKey:@"event_payload"];
+
+    [self sendEvents:event];
+}
+    
 + (void)sendEventsWithJsonString:(NSString*)jsonString {
     NSError* jsonError;
     
