@@ -44,7 +44,7 @@ void kontext_Log(KON_TEXT_LOG_LEVEL logLevel, NSString* message);
 const NSTimeInterval foregroundSendLocationWaitTime = 5 * 60.0;
 const NSTimeInterval backgroundSendLocationWaitTime = 9.75 * 60.0;
 NSTimer* sendLocationTimer = nil;
-os_last_location *lastLocation;
+kontext_last_location *lastLocation;
 bool initialLocationSent = false;
 UIBackgroundTaskIdentifier fcTask;
 
@@ -81,7 +81,7 @@ static KontextLocation* singleInstance = nil;
     return singleInstance;
 }
 
-+ (os_last_location*)lastLocation {
++ (kontext_last_location*)lastLocation {
     return lastLocation;
 }
 + (void)clearLastLocation {
@@ -220,7 +220,7 @@ static KontextLocation* singleInstance = nil;
     
     @synchronized(KontextLocation.mutexObjectForLastLocation) {
         if (!lastLocation)
-            lastLocation = (os_last_location*)malloc(sizeof(os_last_location));
+            lastLocation = (kontext_last_location*)malloc(sizeof(kontext_last_location));
         
         lastLocation->verticalAccuracy = [[location valueForKey:@"verticalAccuracy"] doubleValue];
         lastLocation->horizontalAccuracy = [[location valueForKey:@"horizontalAccuracy"] doubleValue];

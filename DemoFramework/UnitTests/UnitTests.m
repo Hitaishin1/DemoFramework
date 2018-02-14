@@ -1100,7 +1100,7 @@
     // Make sure we track the notification open event
     XCTAssertEqual(KontextTrackFirebaseAnalyticsOverrider.loggedEvents.count, 1);
     id event =  @{
-                  @"os_notification_opened": @{
+                  @"kontext_notification_opened": @{
                       @"campaign": @"Template Name - 1117f966-d8cc-11e4-bed1-df8f05be55bb",
                       @"medium": @"notification",
                       @"notification_id": @"b2f7f966-d8cc-11e4-bed1-df8f05be55bb",
@@ -1124,7 +1124,7 @@
     // Make sure we are tracking the notification received event to firebase.
     XCTAssertEqual(KontextTrackFirebaseAnalyticsOverrider.loggedEvents.count, 1);
     id received_event = @{
-         @"os_notification_received": @{
+         @"kontext_notification_received": @{
               @"campaign": @"Template Name - 1117f966-d8cc-11e4-bed1-df8f05be55bb",
               @"medium": @"notification",
               @"notification_id": @"b2f7f966-d8cc-11e4-bed1-df8f05be55bb",
@@ -1142,7 +1142,7 @@
     //   an influence_open should be sent to firebase.
     XCTAssertEqual(KontextTrackFirebaseAnalyticsOverrider.loggedEvents.count, 2);
     id influence_open_event = @{
-       @"os_notification_influence_open": @{
+       @"kontext_notification_influence_open": @{
           @"campaign": @"Template Name - 1117f966-d8cc-11e4-bed1-df8f05be55bb",
           @"medium": @"notification",
           @"notification_id": @"b2f7f966-d8cc-11e4-bed1-df8f05be55bb",
@@ -1157,8 +1157,8 @@
     XCTAssertEqual(paylaod.templateID, @"templateId");
     XCTAssertEqual(paylaod.templateName, @"Template name");
     
-    // Test os_data format
-    aps = @{@"os_data": @{@"ti": @"templateId", @"tn": @"Template name"}};
+    // Test kontext_data format
+    aps = @{@"kontext_data": @{@"ti": @"templateId", @"tn": @"Template name"}};
     paylaod = [KontextNotificationPayload parseWithApns:aps];
     XCTAssertEqual(paylaod.templateID, @"templateId");
     XCTAssertEqual(paylaod.templateName, @"Template name");
@@ -1237,7 +1237,7 @@
 }
 
 
-// Testing iOS 10 - 2.4.0+ button fromat - with os_data aps payload format
+// Testing iOS 10 - 2.4.0+ button fromat - with kontext_data aps payload format
 - (void)testNotificationOpenFromButtonPressWithNewformat {
     @synchronized(KontextClientOverrider.lastHTTPRequest) {
         __block BOOL openedWasFire = false;
@@ -1255,7 +1255,7 @@
                                 @"mutable-content": @1,
                                 @"alert": @"Message Body"
                                 },
-                        @"os_data": @{
+                        @"kontext_data": @{
                                 @"i": @"b2f7f966-d8cc-11e4-bed1-df8f05be55bb",
                                 @"buttons": @[@{@"i": @"id1", @"n": @"text1"}],
                                 }};
@@ -1286,7 +1286,7 @@
     }
 }
 
-// Testing iOS 10 - 2.4.0+ button fromat - with os_data aps payload format
+// Testing iOS 10 - 2.4.0+ button fromat - with kontext_data aps payload format
 - (void)notificationAlertButtonsDisplayWithFormat:(NSDictionary *)userInfo {
     __block BOOL openedWasFire = false;
     id receiveBlock = ^(KontextNotificationOpenedResult *result) {
@@ -1339,7 +1339,7 @@
                              @"mutable-content": @1,
                              @"alert": @{@"body": @"Message Body", @"title": @"title"}
                              },
-                     @"os_data": @{
+                     @"kontext_data": @{
                              @"i": @"b2f7f966-d8cc-11e4-bed1-df8f05be55bf",
                              @"buttons": @[@{@"i": @"id1", @"n": @"text1"}],
                              }};
@@ -1380,7 +1380,7 @@
     /*
     openedWasFire = false;
     userInfo = @{@"alert": @"body",
-                 @"os_data": @{
+                 @"kontext_data": @{
                          @"i": @"b2f7f966-d8cc-11e4-bed1-df8f05be55bc"
                          },
                  @"foo": @"bar"};
@@ -1390,7 +1390,7 @@
     */
 }
 
-// Testing iOS 10 - pre-2.4.0 button fromat - with os_data aps payload format
+// Testing iOS 10 - pre-2.4.0 button fromat - with kontext_data aps payload format
 - (void)receivedCallbackWithButtonsWithUserInfo:(NSDictionary *)userInfo {
     __block BOOL recievedWasFire = false;
     
@@ -1419,7 +1419,7 @@
 
 - (void)testReceivedCallbackWithButtonsWithNewFormat {
     let newFormat = @{@"aps": @{@"content_available": @1},
-                      @"os_data": @{
+                      @"kontext_data": @{
                               @"i": @"b2f7f966-d8cc-11e4-bed1-df8f05be55bb",
                               @"buttons": @{
                                       @"m": @"alert body only",
@@ -1469,14 +1469,14 @@ didReceiveRemoteNotification:userInfo
     XCTAssertEqualObjects(actions[0].title, @"text1");
 }
 
-// Testing iOS 8 - with os_data aps payload format
+// Testing iOS 8 - with kontext_data aps payload format
 - (void)testGeneratingLocalNotificationWithButtonsiOS8_osdata_format {
     KontextHelperOverrider.mockIOSVersion = 8;
     [self initKontextAndThreadWait];
     [self backgroundApp];
     
     let userInfo = @{@"aps": @{@"content_available": @1},
-                    @"os_data": @{
+                    @"kontext_data": @{
                             @"buttons": @{
                                     @"m": @"alert body only",
                                     @"o": @[@{@"i": @"id1", @"n": @"text1"}]
@@ -1811,7 +1811,7 @@ didReceiveRemoteNotification:userInfo
                              @"mutable-content": @1,
                              @"alert": @"Message Body"
                              },
-                     @"os_data": @{
+                     @"kontext_data": @{
                              @"i": @"b2f7f966-d8cc-11e4-bed1-df8f05be55bb",
                              @"buttons": @[@{@"i": @"id1", @"n": @"text1"}],
                              @"att": @{ @"id": @"http://domain.com/file.jpg" }
@@ -1842,7 +1842,7 @@ didReceiveRemoteNotification:userInfo
                             @"mutable-content": @1,
                             @"alert": @"Message Body"
                             },
-                    @"os_data": @{
+                    @"kontext_data": @{
                             @"i": @"b2f7f966-d8cc-11e4-bed1-df8f05be55bb",
                             @"buttons": @[@{@"i": @"id1", @"n": @"text1"}],
                             @"att": @{ @"id": @"http://domain.com/file.jpg" }
@@ -1867,7 +1867,7 @@ didReceiveRemoteNotification:userInfo
                             @"mutable-content": @1,
                             @"alert": @"Message Body"
                             },
-                    @"os_data": @{
+                    @"kontext_data": @{
                             @"i": @"b2f7f966-d8cc-11e4-bed1-df8f05be55bb",
                             @"att": @{ @"id": @"file.jpg" }
                             }};
@@ -1887,7 +1887,7 @@ didReceiveRemoteNotification:userInfo
                         @"mutable-content": @1,
                         @"alert": @"Message Body"
                         },
-                    @"os_data": @{
+                    @"kontext_data": @{
                         @"i": @"b2f7f966-d8cc-11e4-bed1-df8f05be55bb",
                         @"buttons": @[@{@"i": @"id1", @"n": @"text1"}],
                         @"att": @{ @"id": @"http://domain.com/file.jpg" }

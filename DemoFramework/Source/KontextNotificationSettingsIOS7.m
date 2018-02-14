@@ -45,7 +45,7 @@
     // Don't call getNotificationTypes as this will cause currentSubscriptionState to initialize before currentPermissionState
     status.notificationTypes = [userDefaults stringForKey:@"GT_DEVICE_TOKEN"] == nil ? 0 : 7;
     status.accepted = status.notificationTypes > 0;
-    status.answeredPrompt = [userDefaults boolForKey:@"OS_NOTIFICATION_PROMPT_ANSWERED"];
+    status.answeredPrompt = [userDefaults boolForKey:@"KONTEXT_NOTIFICATION_PROMPT_ANSWERED"];
     
     completionHandler(status);
 }

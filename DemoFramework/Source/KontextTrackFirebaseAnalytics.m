@@ -43,7 +43,7 @@ static var trackingEnabled = false;
 //         extension target to track inflenced opens.
 +(void)init {
     let userDefaults = [[NSUserDefaults alloc] initWithSuiteName:[self appGroupKey]];
-    trackingEnabled = [userDefaults boolForKey:@"OS_ENABLE_FIREBASE_ANALYTICS"];
+    trackingEnabled = [userDefaults boolForKey:@"KONTEXT_ENABLE_FIREBASE_ANALYTICS"];
 }
 
 
@@ -51,9 +51,9 @@ static var trackingEnabled = false;
     trackingEnabled = (BOOL)params[@"fba"];
     let userDefaults = [[NSUserDefaults alloc] initWithSuiteName:[self appGroupKey]];
     if (trackingEnabled)
-        [userDefaults setBool:true forKey:@"OS_ENABLE_FIREBASE_ANALYTICS"];
+        [userDefaults setBool:true forKey:@"KONTEXT_ENABLE_FIREBASE_ANALYTICS"];
     else
-        [userDefaults removeObjectForKey:@"OS_ENABLE_FIREBASE_ANALYTICS"];
+        [userDefaults removeObjectForKey:@"KONTEXT_ENABLE_FIREBASE_ANALYTICS"];
 }
 
 +(NSString*)appGroupKey {
@@ -90,7 +90,7 @@ static var trackingEnabled = false;
     
     lastOpenedTime = [[NSDate date] timeIntervalSince1970];
     
-    [self logEventWithName:@"os_notification_opened"
+    [self logEventWithName:@"kontext_notification_opened"
                 parameters:@{
                              @"source": @"Kontext",
                              @"medium": @"notification",
@@ -105,12 +105,12 @@ static var trackingEnabled = false;
     
     let campaign = [self getCampaignNameFromPayload:payload];
     let userDefaults = [[NSUserDefaults alloc] initWithSuiteName:[self appGroupKey]];
-    [userDefaults setObject:payload.notificationID forKey:@"OS_LAST_RECIEVED_NOTIFICATION_ID"];
-    [userDefaults setObject:campaign forKey:@"OS_LAST_RECIEVED_GAF_CAMPAIGN"];
-    [userDefaults setDouble:[[NSDate date] timeIntervalSince1970] forKey:@"OS_LAST_RECIEVED_TIME"];
+    [userDefaults setObject:payload.notificationID forKey:@"KONTEXT_LAST_RECIEVED_NOTIFICATION_ID"];
+    [userDefaults setObject:campaign forKey:@"KONTEXT_LAST_RECIEVED_GAF_CAMPAIGN"];
+    [userDefaults setDouble:[[NSDate date] timeIntervalSince1970] forKey:@"KONTEXT_LAST_RECIEVED_TIME"];
     [userDefaults synchronize];
     
-    [self logEventWithName:@"os_notification_received"
+    [self logEventWithName:@"kontext_notification_received"
                 parameters:@{
                              @"source": @"Kontext",
                              @"medium": @"notification",
@@ -124,7 +124,7 @@ static var trackingEnabled = false;
         return;
     
     let userDefaults = [[NSUserDefaults alloc] initWithSuiteName:[self appGroupKey]];
-    NSTimeInterval lastTimeReceived = [userDefaults doubleForKey:@"OS_LAST_RECIEVED_TIME"];
+    NSTimeInterval lastTimeReceived = [userDefaults doubleForKey:@"KONTEXT_LAST_RECIEVED_TIME"];
     
     if (lastTimeReceived == 0)
         return;
@@ -140,10 +140,10 @@ static var trackingEnabled = false;
     if (now - lastOpenedTime < 30)
         return;
     
-    NSString *notificationId = [userDefaults objectForKey:@"OS_LAST_RECIEVED_NOTIFICATION_ID"];
-    NSString *campaign = [userDefaults objectForKey:@"OS_LAST_RECIEVED_GAF_CAMPAIGN"];
+    NSString *notificationId = [userDefaults objectForKey:@"KONTEXT_LAST_RECIEVED_NOTIFICATION_ID"];
+    NSString *campaign = [userDefaults objectForKey:@"KONTEXT_LAST_RECIEVED_GAF_CAMPAIGN"];
     
-    [self logEventWithName:@"os_notification_influence_open"
+    [self logEventWithName:@"kontext_notification_influence_open"
                 parameters:@{
                              @"source": @"Kontext",
                              @"medium": @"notification",

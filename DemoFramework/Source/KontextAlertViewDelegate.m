@@ -100,12 +100,12 @@ static NSMutableArray* delegateReference;
         
         NSMutableDictionary* userInfo = [mMessageDict mutableCopy];
         
-        //fixed for iOS 7, which has 'actionbuttons' as a root property of the dict, not in 'os_data'
-        if (mMessageDict[@"os_data"] && !mMessageDict[@"actionbuttons"]) {
-            if ([mMessageDict[@"os_data"][@"buttons"] isKindOfClass:[NSDictionary class]])
-                userInfo[@"actionSelected"] = mMessageDict[@"os_data"][@"buttons"][@"o"][buttonIndex - 1][@"i"];
+        //fixed for iOS 7, which has 'actionbuttons' as a root property of the dict, not in 'kontext_data'
+        if (mMessageDict[@"kontext_data"] && !mMessageDict[@"actionbuttons"]) {
+            if ([mMessageDict[@"kontext_data"][@"buttons"] isKindOfClass:[NSDictionary class]])
+                userInfo[@"actionSelected"] = mMessageDict[@"kontext_data"][@"buttons"][@"o"][buttonIndex - 1][@"i"];
             else
-                userInfo[@"actionSelected"] = mMessageDict[@"os_data"][@"buttons"][buttonIndex - 1][@"i"];
+                userInfo[@"actionSelected"] = mMessageDict[@"kontext_data"][@"buttons"][buttonIndex - 1][@"i"];
         } else if (mMessageDict[@"buttons"]) {
              userInfo[@"actionSelected"] = mMessageDict[@"buttons"][buttonIndex - 1][@"i"];
         } else {

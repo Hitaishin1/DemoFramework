@@ -46,7 +46,7 @@
 -(void)initWithRawMessage:(NSDictionary*)message {
     _rawPayload = [NSDictionary dictionaryWithDictionary:message];
     
-    if ([_rawPayload[@"os_data"] isKindOfClass:[NSDictionary class]])
+    if ([_rawPayload[@"kontext_data"] isKindOfClass:[NSDictionary class]])
         [self parseOSDataPayload];
     else
         [self parseOriginalPayload];
@@ -80,35 +80,35 @@
 }
 
 // New Kontext playload format.
-//   Kontext specific features are under "os_data".
+//   Kontext specific features are under "kontext_data".
 -(void)parseOSDataPayload {
-    NSDictionary *os_data = _rawPayload[@"os_data"];
-    BOOL remoteSlient = os_data[@"buttons"] && !_rawPayload[@"aps"][@"alert"];
+    NSDictionary *kontext_data = _rawPayload[@"kontext_data"];
+    BOOL remoteSlient = kontext_data[@"buttons"] && !_rawPayload[@"aps"][@"alert"];
     if (remoteSlient)
-        [self parseRemoteSlient:os_data[@"buttons"]];
+        [self parseRemoteSlient:kontext_data[@"buttons"]];
     else {
         [self parseApnsFields];
-        _attachments = os_data[@"att"];
+        _attachments = kontext_data[@"att"];
         
-        // it appears that in iOS 9, the 'buttons' os_data field is an object not array
+        // it appears that in iOS 9, the 'buttons' kontext_data field is an object not array
         // this if statement checks for this condition and parses appropriately
-        if ([os_data[@"buttons"] isKindOfClass:[NSArray class]]) {
-            [self parseActionButtons:os_data[@"buttons"]];
-        } else if (os_data[@"buttons"] && [os_data[@"buttons"] isKindOfClass: [NSDictionary class]] && [os_data[@"buttons"][@"o"] isKindOfClass: [NSArray class]]) {
-            [self parseActionButtons:os_data[@"buttons"][@"o"]];
+        if ([kontext_data[@"buttons"] isKindOfClass:[NSArray class]]) {
+            [self parseActionButtons:kontext_data[@"buttons"]];
+        } else if (kontext_data[@"buttons"] && [kontext_data[@"buttons"] isKindOfClass: [NSDictionary class]] && [kontext_data[@"buttons"][@"o"] isKindOfClass: [NSArray class]]) {
+            [self parseActionButtons:kontext_data[@"buttons"][@"o"]];
         } else if ([_rawPayload[@"actionbuttons"] isKindOfClass:[NSArray class]]) {
             [self parseActionButtons:_rawPayload[@"actionbuttons"]];
         }
     }
     
-    [self parseCommonKontextFields:_rawPayload[@"os_data"]];
+    [self parseCommonKontextFields:_rawPayload[@"kontext_data"]];
     [self parseOSDataAdditionalData];
 }
 
 -(void)parseOSDataAdditionalData {
     NSMutableDictionary *additional = [_rawPayload mutableCopy];
     [additional removeObjectForKey:@"aps"];
-    [additional removeObjectForKey:@"os_data"];
+    [additional removeObjectForKey:@"kontext_data"];
     _additionalData = [[NSDictionary alloc] initWithDictionary:additional];
 }
 
