@@ -76,7 +76,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface KontextRequestSendLocation : KontextRequest
-+ (instancetype)withUserId:(NSString *)userId appId:(NSString *)appId location:(os_last_location *)coordinate networkType:(NSNumber *)netType backgroundState:(BOOL)backgroundState;
++ (instancetype)withUserId:(NSString *)userId appId:(NSString *)appId location:(kontext_last_location *)coordinate networkType:(NSNumber *)netType backgroundState:(BOOL)backgroundState;
 @end
 
 @interface KontextRequestOnFocus : KontextRequest
@@ -88,6 +88,10 @@ NS_ASSUME_NONNULL_END
 
 @interface KontextRequestRegisterUser : KontextRequest
 + (instancetype _Nonnull)withData:(NSDictionary * _Nonnull)registrationData userId:(NSString * _Nullable)userId;
+@end
+
+@interface KontextRequestSyncUserState : KontextRequest
++ (instancetype _Nullable )withUserId:(NSString *_Nullable)userId appId:(NSString *_Nullable)appId userInfo:(NSDictionary *_Nonnull)userInfo;
 @end
 
 #endif /* Requests_h */

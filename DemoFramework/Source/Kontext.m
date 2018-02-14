@@ -377,7 +377,10 @@ static ObserableSubscriptionStateChangesType* _subscriptionStateChangesObserver;
         }
 
         if (self.currentSubscriptionState.userId)
+        {
             [self registerUser];
+            [self syncUserState];
+        }
         else {
             [self.osNotificationSettings getNotificationPermissionState:^(KontextPermissionState *state) {
                 if (state.answeredPrompt)
@@ -657,6 +660,28 @@ void kontext_Log(KON_TEXT_LOG_LEVEL logLevel, NSString* message) {
     [userDefaults setValue:@"true" forKey:@"PREF_USER_ATTRIBUTE_STATE"];
     [userDefaults synchronize];
 }
+
++ (void)syncUserState
+{
+    let userDefaults = [NSUserDefaults standardUserDefaults];
+
+    NSString *userAttributeState = [userDefaults objectForKey:@"PREF_USER_ATTRIBUTE_STATE"];
+    if ([userAttributeState isEqualToString:@"true"]) {
+        NSString *jStr = [userDefaults objectForKey:@"PREF_USER_ATTRIBUTE"];
+
+        NSError *jsonError;
+        NSData *objectData = [jStr dataUsingEncoding:NSUTF8StringEncoding];
+        NSDictionary *json = [NSJSONSerialization JSONObjectWithData:objectData
+                                                             options:NSJSONReadingMutableContainers
+                                                               error:&jsonError];
+
+//        [KontextClient.sharedClient executeRequest:[KontextRequestSyncUserState withUserId:self.currentSubscriptionState.userId appId:self.app_id userInfo:json] onSuccess:successBlock onFailure:failureBlock];
+        [KontextClient.sharedClient executeRequest:[KontextRequestSyncUserState withUserId:self.currentSubscriptionState.userId appId:self.app_id userInfo:json] onSuccess:nil onFailure:nil];
+        [userDefaults setValue:@"false" forKey:@"PREF_USER_ATTRIBUTE_STATE"];
+        [userDefaults synchronize];
+    }
+}
+
 #pragma mark : Get Wifi Results
 
 + (void)getWifiResults{
@@ -1226,7 +1251,7 @@ static NSString *_lastnonActiveMessageId;
     
     kontext_Log(KON_TEXT_LL_VERBOSE, @"notificationOpened:isActive called!");
     
-    NSDictionary* customDict = [messageDict objectForKey:@"os_data"];
+    NSDictionary* customDict = [messageDict objectForKey:@"kontext_data"];
     if (!customDict)
         customDict = [messageDict objectForKey:@"custom"];
     
@@ -1297,7 +1322,7 @@ static NSString *_lastnonActiveMessageId;
                         isActive:(BOOL)isActive
                       actionType:(KontextNotificationActionType)actionType
                      displayType:(KontextNotificationDisplayType)displayType {
-    NSDictionary* customDict = [messageDict objectForKey:@"os_data"];
+    NSDictionary* customDict = [messageDict objectForKey:@"kontext_data"];
     if (customDict == nil)
         customDict = [messageDict objectForKey:@"custom"];
     
@@ -1413,7 +1438,7 @@ static NSString *_lastnonActiveMessageId;
     
     if (![KontextHelper isIOSVersionGreaterOrEqual:10]) {
         NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
-        [userDefaults setBool:true forKey:@"OS_NOTIFICATION_PROMPT_ANSWERED"];
+        [userDefaults setBool:true forKey:@"KONTEXT_NOTIFICATION_PROMPT_ANSWERED"];
         [userDefaults synchronize];
     }
     
@@ -1460,7 +1485,7 @@ static NSString *_lastnonActiveMessageId;
     
     // TODO: Look into why the userInfo payload would be different here for displaying vs opening....
     // Check for buttons or attachments pre-2.4.0 version
-    if ((userInfo[@"os_data"][@"buttons"] && [userInfo[@"os_data"][@"buttons"] isKindOfClass:[NSDictionary class]]) || userInfo[@"at"] || userInfo[@"o"])
+    if ((userInfo[@"kontext_data"][@"buttons"] && [userInfo[@"kontext_data"][@"buttons"] isKindOfClass:[NSDictionary class]]) || userInfo[@"at"] || userInfo[@"o"])
         richData = userInfo;
     
     // Generate local notification for action button and/or attachments.

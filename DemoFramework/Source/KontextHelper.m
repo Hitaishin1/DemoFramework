@@ -306,7 +306,7 @@ KontextHandleNotificationActionBlock handleNotificationAction;
 
 + (BOOL)isRemoteSilentNotification:(NSDictionary*)msg {
     //no alert, sound, or badge payload
-    if(msg[@"badge"] || msg[@"aps"][@"badge"] || msg[@"m"] || msg[@"o"] || msg[@"s"] || (msg[@"title"] && [msg[@"title"] length] > 0) || msg[@"sound"] || msg[@"aps"][@"sound"] || msg[@"aps"][@"alert"] || msg[@"os_data"][@"buttons"])
+    if(msg[@"badge"] || msg[@"aps"][@"badge"] || msg[@"m"] || msg[@"o"] || msg[@"s"] || (msg[@"title"] && [msg[@"title"] length] > 0) || msg[@"sound"] || msg[@"aps"][@"sound"] || msg[@"aps"][@"alert"] || msg[@"kontext_data"][@"buttons"])
         return false;
     return true;
 }
@@ -328,15 +328,15 @@ KontextHandleNotificationActionBlock handleNotificationAction;
     NSMutableDictionary* userInfo, *customDict, *additionalData, *optionsDict;
     BOOL is2dot4Format = false;
     
-    if (remoteUserInfo[@"os_data"][@"buttons"]) {
+    if (remoteUserInfo[@"kontext_data"][@"buttons"]) {
         userInfo = [remoteUserInfo mutableCopy];
         additionalData = [NSMutableDictionary dictionary];
         
-        is2dot4Format = [userInfo[@"os_data"][@"buttons"] isKindOfClass:[NSArray class]];
+        is2dot4Format = [userInfo[@"kontext_data"][@"buttons"] isKindOfClass:[NSArray class]];
         if (is2dot4Format)
-            optionsDict = userInfo[@"os_data"][@"buttons"];
+            optionsDict = userInfo[@"kontext_data"][@"buttons"];
         else
-           optionsDict = userInfo[@"os_data"][@"buttons"][@"o"];
+           optionsDict = userInfo[@"kontext_data"][@"buttons"][@"o"];
     }
     else if (remoteUserInfo[@"custom"]) {
         userInfo = [remoteUserInfo mutableCopy];
@@ -365,10 +365,10 @@ KontextHandleNotificationActionBlock handleNotificationAction;
     if ([additionalData count] == 0)
         additionalData = nil;
     
-    if (remoteUserInfo[@"os_data"]) {
+    if (remoteUserInfo[@"kontext_data"]) {
         [userInfo addEntriesFromDictionary:additionalData];
         if (!is2dot4Format)
-            userInfo[@"aps"] = @{@"alert" : userInfo[@"os_data"][@"buttons"][@"m"]};
+            userInfo[@"aps"] = @{@"alert" : userInfo[@"kontext_data"][@"buttons"][@"m"]};
     }
     else {
         customDict[@"a"] = additionalData;
@@ -386,7 +386,7 @@ KontextHandleNotificationActionBlock handleNotificationAction;
 + (BOOL)isKontextPayload {
     if (!lastMessageReceived)
         return NO;
-    return lastMessageReceived[@"custom"][@"i"] || lastMessageReceived[@"os_data"][@"i"];
+    return lastMessageReceived[@"custom"][@"i"] || lastMessageReceived[@"kontext_data"][@"i"];
 }
 
 + (void)handleNotificationReceived:(KontextNotificationDisplayType)displayType {

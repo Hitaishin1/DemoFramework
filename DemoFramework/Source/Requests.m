@@ -193,7 +193,7 @@
 @end
 
 @implementation KontextRequestSendLocation
-+ (instancetype)withUserId:(NSString *)userId appId:(NSString *)appId location:(os_last_location *)coordinate networkType:(NSNumber *)netType backgroundState:(BOOL)backgroundState {
++ (instancetype)withUserId:(NSString *)userId appId:(NSString *)appId location:(kontext_last_location *)coordinate networkType:(NSNumber *)netType backgroundState:(BOOL)backgroundState {
     let request = [KontextRequestSendLocation new];
     
     request.parameters = @{@"app_id" : appId, @"lat" : @(coordinate->cords.latitude), @"long" : @(coordinate->cords.longitude), @"loc_acc_vert" : @(coordinate->verticalAccuracy), @"loc_acc" : @(coordinate->horizontalAccuracy), @"net_type" : netType, @"loc_bg" : @(backgroundState)};
@@ -225,3 +225,16 @@
     return request;
 }
 @end
+
+@implementation KontextRequestSyncUserState
++ (instancetype)withUserId:(NSString *)userId appId:(NSString *)appId userInfo:(NSDictionary *)userInfo {
+    let request = [KontextRequestSyncUserState new];
+    
+    request.parameters = @{@"app_id" : appId, @"user_info" : userInfo};
+    request.method = PUT;
+    request.path = [NSString stringWithFormat:@"players/%@", userId];
+    
+    return request;
+}
+@end
+

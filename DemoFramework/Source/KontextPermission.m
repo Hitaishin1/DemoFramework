@@ -46,8 +46,8 @@
 - (instancetype)initAsFrom {
     NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
     
-    _hasPrompted = [userDefaults boolForKey:@"OS_HAS_PROMPTED_FOR_NOTIFICATIONS_LAST"];
-    _answeredPrompt = [userDefaults boolForKey:@"OS_NOTIFICATION_PROMPT_ANSWERED_LAST"];
+    _hasPrompted = [userDefaults boolForKey:@"KONTEXT_HAS_PROMPTED_FOR_NOTIFICATIONS_LAST"];
+    _answeredPrompt = [userDefaults boolForKey:@"KONTEXT_NOTIFICATION_PROMPT_ANSWERED_LAST"];
     _accepted  = [userDefaults boolForKey:@"KONTEXT_ACCEPTED_NOTIFICATION_LAST"];
     
     return self;
@@ -56,8 +56,8 @@
 - (void)persistAsFrom {
     NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
     
-    [userDefaults setBool:_hasPrompted forKey:@"OS_HAS_PROMPTED_FOR_NOTIFICATIONS_LAST"];
-    [userDefaults setBool:_answeredPrompt forKey:@"OS_NOTIFICATION_PROMPT_ANSWERED_LAST"];
+    [userDefaults setBool:_hasPrompted forKey:@"KONTEXT_HAS_PROMPTED_FOR_NOTIFICATIONS_LAST"];
+    [userDefaults setBool:_answeredPrompt forKey:@"KONTEXT_NOTIFICATION_PROMPT_ANSWERED_LAST"];
     [userDefaults setBool:_accepted forKey:@"KONTEXT_ACCEPTED_NOTIFICATION_LAST"];
     
     [userDefaults synchronize];
@@ -79,7 +79,7 @@
 - (void)setHasPrompted:(BOOL)inHasPrompted {
     if (_hasPrompted != inHasPrompted) {
         NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
-        [userDefaults setBool:true forKey:@"OS_HAS_PROMPTED_FOR_NOTIFICATIONS"];
+        [userDefaults setBool:true forKey:@"KONTEXT_HAS_PROMPTED_FOR_NOTIFICATIONS"];
         [userDefaults synchronize];
     }
     

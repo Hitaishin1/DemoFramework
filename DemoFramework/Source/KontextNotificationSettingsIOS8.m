@@ -43,7 +43,7 @@
     
     status.notificationTypes = [[UIApplication sharedApplication] currentUserNotificationSettings].types;
     status.accepted = status.notificationTypes > 0;
-    status.answeredPrompt = [userDefaults boolForKey:@"OS_NOTIFICATION_PROMPT_ANSWERED"];
+    status.answeredPrompt = [userDefaults boolForKey:@"KONTEXT_NOTIFICATION_PROMPT_ANSWERED"];
     
     completionHandler(status);
 }

@@ -35,17 +35,17 @@ typedef struct kontext_location_coordinate {
     double longitude;
 } kontext_location_coordinate;
 
-typedef struct os_last_location {
+typedef struct kontext_last_location {
     kontext_location_coordinate cords;
     double verticalAccuracy;
     double horizontalAccuracy;
-} os_last_location;
+} kontext_last_location;
 
 
 @interface KontextLocation : NSObject
 + (void) getLocation:(bool)prompt;
 + (void) sendLocation;
-+ (os_last_location*)lastLocation;
++ (kontext_last_location*)lastLocation;
 + (void)clearLastLocation;
 + (void)onfocus:(BOOL)isActive;
 
